@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora - Tech Game</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="calculadora.css">
+     <link rel="stylesheet" href="chatbot.css">
+
+    <style>
+        /* Estilos de Navegação (Mantidos) */
+        .caixa {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .caixa h1 img { max-width: 150px; }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li a {
+            color: #00ffcc;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color .3s;
+        }
+        nav ul li a:hover,
+        nav ul li a.active { color: #ff4444; }
+
+
+        /* === AJUSTES DE ESTILOS DA CALCULADORA (Novos e Modificados) === */
+        .calculadora-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background: #1a2a44;
+            border-radius: 15px;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0,255,204,.2);
+            /* NOVO: Layout de duas colunas */
+            display: grid;
+            grid-template-columns: 1fr 1.2fr; /* Colunas para inputs e resultados/gráfico */
+            gap: 30px;
+        }
+
+        .tipo-calculadora-selector { display: none; } 
+        .calc-section { display: block; }
+        .calc-section.active { display: block; }
+
+        .input-group { margin: 15px 0; }
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #00ffcc;
+            font-weight: bold;
+        }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #00ffcc;
+            border-radius: 8px;
+            background: #0a1a2a;
+            color: #fff;
+            font-size: 1em;
+        }
+        .input-hint {
+            font-size: .85em;
+            color: #aaa;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .btn-calcular {
+            background: #00ffcc;
+            color: #0a1a2a;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px; /* Aumentei a margem */
+            transition: .3s;
+            width: 100%; /* NOVO: Botão com largura total */
+        }
+        .btn-calcular:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .calculadora-resultados {
+            /* Removi margem superior, padding mantido */
+            padding: 20px; 
+            background: #0f2439;
+            border-radius: 10px;
+            border: 1px solid #00ffcc;
+            /* NOVO: Estilos para centralizar e garantir a altura mínima */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px; 
+        }
+        .calculadora-resultados h3 { color: #00ffcc; margin-top: 0; }
+        .calculadora-resultados p strong { color: #fff; }
+
+        .placeholder-resultado { 
+            text-align: center; 
+            color: #888; 
+            width: 100%;
+        }
+        
+        /* NOVO: Estilos para o Gráfico */
+        #graficoCanvas {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        /* NOVO: Estilos para os Toggles (Frete/Imposto) */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #0f2439;
+            margin-bottom: 10px;
+        }
+        .toggle-group label {
+            color: #fff;
+            font-weight: normal;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #00ffcc; }
+        input:focus + .slider { box-shadow: 0 0 1px #00ffcc; }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        /* Estilo para detalhamento dos resultados */
+        .detalhe-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+
+        /* Responsividade */
+        @media (max-width: 968px) {
+            .calculadora-container {
+                grid-template-columns: 1fr; /* Volta para uma coluna em telas menores */
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #0a1a2a;
+            color: #aaa;
+            margin-top: 50px;
+        }
+        footer img { max-width: 120px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="banner-section">
+            <div class="caixa">
+                <h1><img src="assets/logo.png" alt="Logo Tech Game"></h1>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="produtos.html">Produtos</a></li>
+                        <li><a href="galeria.html">Galeria</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="mapa.html">Localização</a></li>
+                        <li><a href="calculadora.html" class="active">Calculadora</a></li>
+                        <li><a href="contato.html">Contato</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="banner-video">
+                <video autoplay muted loop playsinline>
+                    <source src="video/tech-game.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h2 style="text-align:center;color:#00ffcc;margin:30px 0;">
+            Calculadora de Compras - Tech Game
+        </h2>
+
+        <div class="calculadora-container">
+            <div class="calculadora-inputs" id="calculadoraInputs">
+
+                <div class="calc-section active" data-section="compra">
+                    <h3>Calculadora de Compra Gamer</h3>
+                    <p class="calc-descricao">
+                        Calcule o valor total com frete, imposto, parcelamento e desconto à vista!
+                    </p>
+
+                    <div class="input-group">
+                        <label for="preco">Preço do Produto (R$)</label>
+                        <input type="number" id="preco" placeholder="Ex: 599.90" min="0" step="0.01">
+                        <span class="input-hint">Preço unitário do periférico</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="quantidade">Quantidade</label>
+                        <input type="number" id="quantidade" value="1" min="1" step="1">
+                        <span class="input-hint">Quantos itens você quer comprar?</span>
+                    </div>
+
+                    <div class="toggle-group">
+                        <label for="toggleImposto">Incluir Imposto (17%)</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggleImposto" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="input-group" id="groupImposto">
+                        <label for="imposto">Imposto (%)</label>
+                        <input type="number" id="imposto" placeholder="Ex: 17" value="17" min="0" max="100" step="0.1" oninput="updateToggleLabel('imposto', 'toggleImposto')">
+                        <span class="input-hint">Ex: ICMS, IPI (geralmente 17%)</span>
+                    </div>
+
+                    <div class="toggle-group">
+                        <label for="toggleFrete">Incluir Frete</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggleFrete" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="input-group" id="groupFrete">
+                        <label for="frete">Frete (R$)</label>
+                        <input type="number" id="frete" placeholder="Ex: 29.90" value="29.90" min="0" step="0.01">
+                        <span class="input-hint">Valor do frete (ou 0 se grátis)</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="parcelas">Parcelas (sem juros)</label>
+                        <input type="number" id="parcelas" value="1" min="1" max="12" step="1">
+                        <span class="input-hint">Até 12x sem juros</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="desconto">Desconto à Vista (%)</label>
+                        <input type="number" id="desconto" placeholder="Ex: 10" value="10" min="0" max="50" step="0.1">
+                        <span class="input-hint">Desconto para pagamento à vista</span>
+                    </div>
+
+                    <button type="button" class="btn-calcular" onclick="calcularCompra()">Calcular Compra</button>
+                </div>
+            </div>
+
+            <div class="calculadora-resultados" id="calculadoraResultados">
+                <div class="placeholder-resultado">
+                    <h3>Aguardando Cálculo</h3>
+                    <p>Preencha os campos e clique em calcular para ver o resumo e o gráfico.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <img src="assets/logo.png" alt="Logo Tech Game">
+        <p class="copyright">© Copyright Tech Game - 2025</p>
+    </footer>
+
+    <script>
+        // Variável global para o gráfico (necessária para destruir e recriar)
+        let myChart;
+
+        // Função para atualizar o rótulo do toggle de Imposto
+        function updateToggleLabel(inputId, toggleId) {
+            const inputElement = document.getElementById(inputId);
+            const toggleElement = document.getElementById(toggleId);
+            
+            if (inputElement && toggleElement) {
+                if (inputId === 'imposto') {
+                    const value = parseFloat(inputElement.value) || 0;
+                    const labelElement = toggleElement.closest('.toggle-group').querySelector('label');
+                    if (labelElement) {
+                        labelElement.textContent = `Incluir Imposto (${value}%)`;
+                    }
+                }
+            }
+        }
+
+        // ===================================
+        // Calculadora de Compra
+        // ===================================
+        function calcularCompra() {
+            // 1. Coleta de Dados
+            const preco = parseFloat(document.getElementById('preco').value) || 0;
+            const qtd   = parseInt(document.getElementById('quantidade').value) || 1;
+            let frete   = parseFloat(document.getElementById('frete').value) || 0;
+            let imp     = parseFloat(document.getElementById('imposto').value) / 100 || 0;
+            const parc  = parseInt(document.getElementById('parcelas').value) || 1;
+            const desc  = parseFloat(document.getElementById('desconto').value) / 100 || 0;
+
+            // Coleta o estado dos toggles (com operador de coalescência nula para segurança)
+            const incluirFrete = document.getElementById('toggleFrete')?.checked ?? true; 
+            const incluirImposto = document.getElementById('toggleImposto')?.checked ?? true; 
+
+            if (preco <= 0 || qtd <= 0) {
+                alert("Preço do produto e quantidade devem ser maiores que zero.");
+                return;
+            }
+
+            // 2. Aplica Toggles (Frete e Imposto)
+            if (!incluirFrete) {
+                frete = 0;
+            }
+            if (!incluirImposto) {
+                imp = 0;
+            }
+
+            // 3. Cálculo dos Valores
+            const subtotal          = preco * qtd;
+            const valorImposto      = subtotal * imp;
+            const totalImposto      = subtotal + valorImposto;
+            const totalFrete        = frete; 
+            const totalSemDesc      = totalImposto + totalFrete;
+            const valorDesc         = totalSemDesc * desc;
+            const totalFinal        = totalSemDesc - valorDesc;
+            const parcela           = totalFinal / parc;
+
+            // 4. Monta o HTML de Resultados (Adicionando o gráfico)
+            const resultadoHTML = `
+                <div class="resultado-visivel" style="width: 100%;">
+                    <div class="resultado-header">
+                        <h3 style="color: #00ffcc;">Total Final da Compra</h3>
+                        <p class="resultado-valor" style="font-size: 2.5em; color: #ff4444;">R$ ${totalFinal.toFixed(2).replace('.', ',')}</p>
+                        ${parc > 1 ? `<p><strong>Parcelamento:</strong> ${parc}x de R$ ${parcela.toFixed(2).replace('.', ',')} (sem juros)</p>` : ''}
+                    </div>
+
+                    <hr style="border-color: #00ffcc33; margin: 20px 0;">
+
+                    <div class="resultado-detalhes">
+                        <h4 style="color: #00ffcc;">Detalhamento dos Custos</h4>
+                        <div class="detalhe-item" style="background: #0a1a2a;">
+                            <span class="detalhe-label">Subtotal (Produto)</span>
+                            <span class="detalhe-valor" style="color: #fff;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                        <div class="detalhe-item" style="background: #0a1a2a;">
+                            <span class="detalhe-label">Imposto (${(imp * 100).toFixed(1)}%)</span>
+                            <span class="detalhe-valor" style="color: ${incluirImposto && imp > 0 ? '#ff4444' : '#00ffcc'};">R$ ${valorImposto.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                        <div class="detalhe-item" style="background: #0a1a2a;">
+                            <span class="detalhe-label">Frete</span>
+                            <span class="detalhe-valor" style="color: ${incluirFrete && frete > 0 ? '#ff4444' : '#00ffcc'};">R$ ${totalFrete.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                        <div class="detalhe-item" style="background: #0a1a2a;">
+                            <span class="detalhe-label">Desconto à vista (${(desc * 100).toFixed(1)}%)</span>
+                            <span class="detalhe-valor" style="color: #00ffcc;">-R$ ${valorDesc.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    </div>
+                    
+                    <hr style="border-color: #00ffcc33; margin: 20px 0;">
+
+                    <div class="resultado-grafico" style="width: 100%;">
+                        <h4 style="color: #00ffcc; text-align: center;">Composição do Custo Final</h4>
+                        <canvas id="graficoCanvas"></canvas>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('calculadoraResultados').innerHTML = resultadoHTML;
+            
+            // 5. Renderiza o gráfico
+            renderizarGrafico(subtotal - valorDesc, valorImposto, totalFrete);
+        }
+
+        // ===================================
+        // Renderizar Gráfico (Chart.js)
+        // ===================================
+        function renderizarGrafico(valorBase, valorImposto, valorFrete) {
+            if (myChart) {
+                myChart.destroy();
+            }
+            
+            const labels = [];
+            const data = [];
+            const colors = [];
+
+            // Apenas adiciona ao gráfico se o valor for positivo
+            if (valorBase > 0) {
+                labels.push('Valor Base (Produto c/ Desconto)');
+                data.push(valorBase);
+                colors.push('#00ffcc');
+            }
+            if (valorImposto > 0) {
+                labels.push('Imposto');
+                data.push(valorImposto);
+                colors.push('#ff4444');
+            }
+            if (valorFrete > 0) {
+                labels.push('Frete');
+                data.push(valorFrete);
+                colors.push('#667eea');
+            }
+
+            if (data.length === 0) return;
+
+            const ctx = document.getElementById('graficoCanvas')?.getContext('2d');
+            
+            if (!ctx) return; 
+
+            myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#fff',
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += 'R$ ' + context.parsed.toFixed(2).replace('.', ',');
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Inicialização: Garante que o rótulo do imposto seja atualizado ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            // Valor inicial (pode ser necessário dar um valor inicial no input imposto para isso funcionar)
+            updateToggleLabel('imposto', 'toggleImposto'); 
+
+            // Adiciona listener para recalcular o rótulo do imposto em tempo real
+            document.getElementById('imposto')?.addEventListener('input', () => {
+                updateToggleLabel('imposto', 'toggleImposto');
+            });
+        });
+    </script>
+</body>
+</html>

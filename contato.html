@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - TechGame</title>
+    <link rel="stylesheet" href="mapa.css">
+    <link rel="stylesheet" href="chatbot.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&family=Russo+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #f8f8f8;
+            min-height: 100vh;
+            /* Imagem de fundo na pasta assets */
+            background: url("assets/banner1.jpg") no-repeat center center fixed;
+            background-size: cover; /* cobre toda a tela */
+            animation: rgbGlow 8s infinite alternate;
+        }
+
+        /* Animação RGB para o fundo */
+        @keyframes rgbGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        header {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 40, 0.8));
+            color: #00ffcc;
+            text-align: center;
+            padding: 25px 0;
+            font-family: 'Russo One', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 2px solid #ff00ff;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(10, 10, 20, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.5), 0 0 50px rgba(255, 0, 255, 0.3);
+            border: 2px solid #00ffcc;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            color: #00ffcc;
+            font-family: 'Russo One', sans-serif;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            letter-spacing: 1.5px;
+        }
+
+        h3 {
+            color: #ff00ff;
+            font-family: 'Russo One', sans-serif;
+            margin-top: 30px;
+            font-size: 1.6em;
+        }
+
+        .description {
+            margin-top: 20px;
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #e0e0e0;
+        }
+
+        .description p {
+            background: rgba(0, 255, 204, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ff00ff;
+        }
+
+        .contact-info {
+            margin-top: 25px;
+            font-size: 1.2em;
+        }
+
+        .contact-info p {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 0, 255, 0.1);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info p:hover {
+            background: rgba(0, 255, 204, 0.2);
+            transform: translateX(10px);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+        }
+
+        .redirect, .map-button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #00ffcc, #ff00ff);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 10px;
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .redirect::after, .map-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .redirect:hover::after, .map-button:hover::after {
+            left: 100%;
+        }
+
+        .redirect:hover, .map-button:hover {
+            background: linear-gradient(135deg, #ff00ff, #00ffcc);
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>TechGame - Loja de Games e Periféricos</h1>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="redirect">← Voltar para a Home</a>
+
+        <h2>Contato</h2>
+        <p>Entre em contato conosco para dúvidas, sugestões ou para saber mais sobre nossos produtos!</p>
+
+        <div class="description">
+            <h3>Sobre a TechGame</h3>
+            <p>
+                A <b>TechGame</b> é uma loja especializada na venda de produtos para gamers, oferecendo desde consoles e jogos até periféricos como teclados, mouses, headsets e muito mais. Com preços competitivos e atendimento especializado, garantimos
+                a melhor experiência para nossos clientes.
+            </p>
+        </div>
+
+        <div class="contact-info">
+            <p><strong>📞 Telefone:</strong> (11) 91234-5678</p>
+            <p><strong>📝 CNPJ:</strong> 12.345.678/0001-99</p>
+            <p><strong>📍 Endereço:</strong> Rua Gamer Fictícia, 456, Cidade Virtual - CV, Brasil</p>
+            <a href="mapa.html" class="map-button">Ver Mapa</a>
+        </div>
+
+        <div id="map"></div>
+    </div>
+    
+    <script src="mapa.js"></script>
+
+    <div class="chat-widget">
+        <div class="chat-button" id="chatButton">
+            <svg class="chat-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            </svg>
+            <svg class="close-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+            <span class="chat-badge" id="chatBadge">1</span>
+        </div>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-avatar">
+                    <img src="assets/logo.png" alt="Assistente">
+                </div>
+                <div class="chat-info">
+                    <h4>TECH GAME</h4>
+                    <span class="chat-status online">Online agora</span>
+                </div>
+                <div class="chat-actions">
+                    <button class="minimize-btn" id="minimizeChat">−</button>
+                    <button class="close-chat-btn" id="closeChatBtn">×</button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <img src="assets/logo.png" alt="Bot">
+                    </div>
+                    <div class="message-content">
+                        <p>Olá! 👋 Sou o assistente virtual da TECH Game. Como posso ajudá-lo hoje?</p>
+                        <span class="message-time">Agora</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-suggestions" id="quickSuggestions">
+                <button class="suggestion-btn" data-suggestion="horarios">📅 Horários</button>
+                <button class="suggestion-btn" data-suggestion="servicos">💼 Serviços</button>
+                <button class="suggestion-btn" data-suggestion="contato">📞 Contato</button>
+                <button class="suggestion-btn" data-suggestion="localizacao">📍 Localização</button>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." maxlength="500">
+                    <button class="send-btn" id="sendBtn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="chat-footer">
+                    <span class="typing-indicator" id="typingIndicator" style="display: none;">
+                        <span></span><span></span><span></span>
+                        Digitando...
+                    </span>
+                    <button class="whatsapp-btn" id="whatsappBtn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.53 3.488"/>
+                        </svg>
+                        Continuar no WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-notification" id="chatNotification" style="display: none;">
+            <div class="notification-content">
+                <strong>Nova mensagem!</strong>
+                <p>O assistente respondeu sua pergunta</p>
+            </div>
+        </div>
+    </div>
+    <script src="chatbot.js" defer></script> 
+
+</body>
+
+</html>
